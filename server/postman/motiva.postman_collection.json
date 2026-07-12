@@ -1,0 +1,1027 @@
+{
+  "info": {
+    "name": "Motiva API",
+    "description": "Tickets, FAQs, Learnings, Skills and Relationships backend for the self-growth tracker.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000", "type": "string" },
+    { "key": "ticketId", "value": "", "type": "string" },
+    { "key": "faqId", "value": "", "type": "string" },
+    { "key": "learningId", "value": "", "type": "string" },
+    { "key": "relationshipId", "value": "", "type": "string" },
+    { "key": "tagId", "value": "", "type": "string" },
+    { "key": "activityId", "value": "", "type": "string" },
+    { "key": "taskId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Create Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('ticketId', body.data.id);",
+                  "  if (body.data.faq) pm.collectionVariables.set('faqId', body.data.faq.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"title\": \"Fix Redis connection timeouts in prod\",\n  \"problem\": \"Redis client kept dropping connections under load, causing 500s on the cache layer.\",\n  \"status\": \"OPEN\",\n  \"difficulty\": \"MEDIUM\",\n  \"tags\": [\"redis\", \"nodejs\", \"performance\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets by Tag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets?tag=redis&difficulty=MEDIUM",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                { "key": "tag", "value": "redis" },
+                { "key": "difficulty", "value": "MEDIUM" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Similar Tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/similar?title=nginx 502 gateway error&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "similar"],
+              "query": [
+                { "key": "title", "value": "nginx 502 gateway error" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ticket",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"timeSpentMinutes\": 120,\n  \"tags\": [\"redis\", \"nodejs\", \"performance\", \"caching\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Move Ticket to In Progress",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Timeline Activity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('activityId', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"type\": \"CALL\",\n  \"note\": \"Called vendor support, confirmed intermittent gateway timeouts on their end\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}/activities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}", "activities"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Timeline Activities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}/activities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}", "activities"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Timeline Activity",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}/activities/{{activityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}", "activities", "{{activityId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resolve Ticket",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"status\": \"RESOLVED\",\n  \"resolution\": \"Increased connection pool size and enabled keep-alive pings every 30s.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate FAQ from Ticket",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('faqId', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}/faq",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}", "faq"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Ticket",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tickets", "{{ticketId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FAQs",
+      "item": [
+        {
+          "name": "List FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/faqs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "faqs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search FAQs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/faqs?search=redis",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "faqs"],
+              "query": [{ "key": "search", "value": "redis" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get FAQ by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/faqs/{{faqId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "faqs", "{{faqId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update FAQ",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"question\": \"How do you fix Redis connection timeouts in prod?\",\n  \"answer\": \"Increase the connection pool size and enable keep-alive pings every 30 seconds.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/faqs/{{faqId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "faqs", "{{faqId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete FAQ",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/faqs/{{faqId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "faqs", "{{faqId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Learnings",
+      "item": [
+        {
+          "name": "Create Learning",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('learningId', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"title\": \"How Kubernetes HPA scales on custom metrics\",\n  \"domain\": \"Technology\",\n  \"source\": \"Internal platform team workshop\",\n  \"notes\": \"Need to pair a custom metrics adapter with Prometheus.\",\n  \"confidence\": 2,\n  \"tags\": [\"kubernetes\", \"observability\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Learnings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Learnings by Tag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings?tag=kubernetes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings"],
+              "query": [{ "key": "tag", "value": "kubernetes" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Learnings by Domain",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings?domain=Language",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings"],
+              "query": [{ "key": "domain", "value": "Language" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Low Confidence Learnings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/low-confidence?threshold=3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "low-confidence"],
+              "query": [{ "key": "threshold", "value": "3" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Learning by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/{{learningId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "{{learningId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Learning",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"confidence\": 4,\n  \"notes\": \"Revisited this after setting it up myself - much clearer now.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/{{learningId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "{{learningId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Learning",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/{{learningId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "{{learningId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Topics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/topics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "topics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Topics by Domain",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/topics?domain=Language",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "topics"],
+              "query": [{ "key": "domain", "value": "Language" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Topic Timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/topics/kubernetes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "topics", "kubernetes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Domains",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/domains",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "domains"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Domains",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/domains?q=tech",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "domains"],
+              "query": [{ "key": "q", "value": "tech" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rename Domain",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"from\": \"tech\",\n  \"to\": \"Technology\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/learnings/domains/rename",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "learnings", "domains", "rename"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        {
+          "name": "Skill Growth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/skills",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "skills"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blind Spots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/skills/blind-spots?days=30&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "skills", "blind-spots"],
+              "query": [
+                { "key": "days", "value": "30" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Relationships",
+      "item": [
+        {
+          "name": "Create Relationship",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('relationshipId', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"personName\": \"Priya Sharma\",\n  \"interactionType\": \"PAIRED_WITH\",\n  \"context\": \"Paired on debugging the checkout service latency spike\",\n  \"notes\": \"She has deep knowledge of the payments gateway integration.\",\n  \"followUpDate\": \"2026-08-01T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Relationships",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Relationships by Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships?interactionType=PAIRED_WITH",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships"],
+              "query": [{ "key": "interactionType", "value": "PAIRED_WITH" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Due Follow-ups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships/follow-ups/due?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships", "follow-ups", "due"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Relationship by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships/{{relationshipId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships", "{{relationshipId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Relationship (mark follow-up done)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"followUpDone\": true,\n  \"notes\": \"Followed up - grabbed coffee and discussed the payments roadmap.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships/{{relationshipId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships", "{{relationshipId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Relationship",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships/{{relationshipId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships", "{{relationshipId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search People",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/relationships/people?q=pri",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "relationships", "people"],
+              "query": [{ "key": "q", "value": "pri" }]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Top Used Tags",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Tags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  if (body.data && body.data.length > 0) {",
+                  "    pm.collectionVariables.set('tagId', body.data[0].id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags?q=redis&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags"],
+              "query": [
+                { "key": "q", "value": "redis" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rename Tag",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"redis-cache\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "{{tagId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Merge Tag",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"targetTagId\": \"{{tagId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/SOURCE_TAG_ID/merge",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "SOURCE_TAG_ID", "merge"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tag",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "{{tagId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Standalone Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('taskId', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"title\": \"Renew AWS cert before expiry\",\n  \"description\": \"Cert expires end of month, rotate via ACM\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2026-08-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Task Linked to Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"title\": \"Validate the fix in staging\",\n  \"priority\": \"MEDIUM\",\n  \"ticketId\": \"{{ticketId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tasks for a Ticket",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks?ticketId={{ticketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks"],
+              "query": [{ "key": "ticketId", "value": "{{ticketId}}" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Standalone Tasks Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks?standaloneOnly=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks"],
+              "query": [{ "key": "standaloneOnly", "value": "true" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Due Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks/due",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks", "due"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task by Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks/{{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks", "{{taskId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Task Done",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"status\": \"DONE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks/{{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks", "{{taskId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tasks/{{taskId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tasks", "{{taskId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
