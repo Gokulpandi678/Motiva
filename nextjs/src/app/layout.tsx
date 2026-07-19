@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@fontsource/plus-jakarta-sans/400.css';
 import '@fontsource/plus-jakarta-sans/500.css';
 import '@fontsource/plus-jakarta-sans/600.css';
@@ -10,6 +10,12 @@ import { Providers } from './providers';
 export const metadata: Metadata = {
   title: 'Motiva',
   icons: { icon: '/favicon.svg' },
+};
+
+// Same as the old Vite index.html's explicit <meta name="viewport"> tag.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 // Same blocking inline script the Vite `index.html` used to run before React

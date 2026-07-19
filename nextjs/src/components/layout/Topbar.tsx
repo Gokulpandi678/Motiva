@@ -21,7 +21,7 @@ export function Topbar() {
   const displayName = user ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email : '';
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border-hairline bg-surface px-6">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border-hairline bg-surface px-4 sm:px-6">
       <div className="flex items-center gap-2">
         {current ? <current.icon className="size-4 text-accent" /> : null}
         <h1 className="text-sm font-semibold text-ink-secondary">{current?.label ?? 'Motiva'}</h1>
@@ -35,8 +35,11 @@ export function Topbar() {
           className="inline-flex h-8 items-center gap-2 rounded-lg bg-accent-gradient px-3 text-xs font-semibold text-accent-ink shadow-sm shadow-accent-glow hover:brightness-110"
         >
           <Zap className="size-3.5" />
-          Quick capture
-          <kbd className="rounded border border-white/30 bg-white/10 px-1.5 py-0.5 text-[10px]">Ctrl K</kbd>
+          {/* No physical keyboard on a phone — Quick Capture is still reachable via the bottom nav / topbar tap, just without the "Ctrl K" hint and label taking up scarce width. */}
+          <span className="hidden sm:inline">Quick capture</span>
+          <kbd className="hidden rounded border border-white/30 bg-white/10 px-1.5 py-0.5 text-[10px] sm:inline-block">
+            Ctrl K
+          </kbd>
         </motion.button>
         <IconButton
           icon={

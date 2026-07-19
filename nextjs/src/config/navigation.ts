@@ -28,3 +28,14 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/faqs', label: 'FAQs', icon: MessageCircleQuestion },
   { to: '/tags', label: 'Tags & Domains', icon: Tags },
 ];
+
+/** The mobile bottom nav's own 4 direct tabs — the rest live under its "More" tab. */
+const MOBILE_PRIMARY_PATHS = ['/', '/tickets', '/tasks', '/learnings'];
+
+export const MOBILE_PRIMARY_NAV_ITEMS: NavItem[] = NAV_ITEMS.filter((item) =>
+  MOBILE_PRIMARY_PATHS.includes(item.to),
+);
+
+export const MOBILE_MORE_NAV_ITEMS: NavItem[] = NAV_ITEMS.filter(
+  (item) => !MOBILE_PRIMARY_PATHS.includes(item.to),
+);
