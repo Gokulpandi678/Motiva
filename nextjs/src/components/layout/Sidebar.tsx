@@ -21,7 +21,8 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'relative flex h-full flex-col overflow-hidden border-r border-sidebar-border bg-sidebar-bg bg-sidebar-glow transition-[width] duration-200',
+        // Hidden on phones — MobileBottomNav takes over navigation there; this is desktop/tablet-only chrome.
+        'relative hidden h-full flex-col overflow-hidden border-r border-sidebar-border bg-sidebar-bg bg-sidebar-glow transition-[width] duration-200 md:flex',
         collapsed ? 'w-16' : 'w-60',
       )}
     >
@@ -30,7 +31,7 @@ export function Sidebar() {
           whileHover={{ rotate: -8, scale: 1.08 }}
           className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent-gradient text-accent-ink shadow-md shadow-accent-glow"
         >
-          <Sprout className="size-[18px]" />
+          <Sprout className="size-4.5" />
         </motion.div>
         {!collapsed && <span className="truncate text-sm font-semibold text-sidebar-ink">Motiva</span>}
       </div>
@@ -56,7 +57,7 @@ export function Sidebar() {
                   transition={{ type: 'spring', stiffness: 500, damping: 40 }}
                 />
               )}
-              <item.icon className="size-[18px] shrink-0" />
+              <item.icon className="size-4.5 shrink-0" />
               {!collapsed && <span className="truncate">{item.label}</span>}
             </Link>
           );
@@ -68,7 +69,7 @@ export function Sidebar() {
         onClick={() => setCollapsed(!collapsed)}
         className="relative flex items-center gap-3 px-4 py-3 text-sm text-sidebar-ink-muted transition-colors hover:text-sidebar-ink"
       >
-        {collapsed ? <ChevronsRight className="size-[18px]" /> : <ChevronsLeft className="size-[18px]" />}
+        {collapsed ? <ChevronsRight className="size-4.5" /> : <ChevronsLeft className="size-4.5" />}
         {!collapsed && <span>Collapse</span>}
       </button>
     </aside>
